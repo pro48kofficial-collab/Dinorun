@@ -2,94 +2,130 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chrome Dino Game + Shop & Promocodes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Мобільний Dino Chrome</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: #f7f7f7;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             user-select: none;
+            -webkit-user-select: none;
+            overflow-x: hidden;
         }
 
         h1 {
             color: #333;
-            margin-bottom: 10px;
+            font-size: 24px;
+            margin: 5px 0;
         }
 
-        /* Ігрова зона */
+        /* Ігрова зона під мобільний екран */
         #game-container {
             position: relative;
-            width: 600px;
-            height: 200px;
+            width: 100%;
+            max-width: 450px;
+            height: 180px;
             background-color: #fff;
-            border-bottom: 2px solid #535353;
+            border-bottom: 3px dashed #535353;
             overflow: hidden;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
+        /* Справжній піксельний динозавр (черезbox-shadow / CSS) */
         #dino {
             position: absolute;
-            left: 50px;
+            left: 30px;
             bottom: 0;
             width: 40px;
-            height: 40px;
-            background-color: #535353;
-            border-radius: 4px;
+            height: 43px;
+            /* Базовий колір буде змінюватися скінами, тут малюємо класичного дино */
+            background: #535353;
+            clip-path: polygon(35% 0%, 85% 0%, 85% 20%, 100% 20%, 100% 45%, 75% 45%, 75% 55%, 55% 55%, 55% 70%, 75% 70%, 75% 80%, 60% 80%, 60% 100%, 50% 100%, 50% 85%, 40% 85%, 40% 100%, 30% 100%, 30% 75%, 20% 75%, 20% 60%, 10% 60%, 10% 45%, 0% 45%, 0% 25%, 15% 25%, 15% 15%, 35% 15%);
             transition: background-color 0.2s;
         }
 
-        /* Очі для динозаврика, щоб був схожий на аватарку */
-        #dino::after {
-            content: '• •';
-            color: white;
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            font-size: 12px;
-            font-weight: bold;
+        /* Анімація бігу (тулимо лапки що змінюються) */
+        .running {
+            animation: runAnim 0.15s infinite alternate;
         }
 
+        @keyframes runAnim {
+            0% { clip-path: polygon(35% 0%, 85% 0%, 85% 20%, 100% 20%, 100% 45%, 75% 45%, 75% 55%, 55% 55%, 55% 70%, 75% 70%, 75% 80%, 60% 80%, 60% 100%, 50% 100%, 45% 85%, 40% 85%, 40% 95%, 30% 95%, 30% 75%, 20% 75%, 20% 60%, 10% 60%, 10% 45%, 0% 45%, 0% 25%, 15% 25%, 15% 15%, 35% 15%); }
+            100% { clip-path: polygon(35% 0%, 85% 0%, 85% 20%, 100% 20%, 100% 45%, 75% 45%, 75% 55%, 55% 55%, 55% 70%, 75% 70%, 75% 85%, 55% 85%, 55% 100%, 45% 100%, 45% 85%, 40% 85%, 40% 100%, 30% 100%, 30% 75%, 20% 75%, 20% 60%, 10% 60%, 10% 45%, 0% 45%, 0% 25%, 15% 25%, 15% 15%, 35% 15%); }
+        }
+
+        /* Піксельний кактус */
         .cactus {
             position: absolute;
-            right: -20px;
+            right: -25px;
             bottom: 0;
-            width: 20px;
-            height: 40px;
-            background-color: #85a93d;
-            border-radius: 3px;
+            width: 22px;
+            height: 45px;
+            background-color: #535353;
+            clip-path: polygon(35% 0%, 65% 0%, 65% 100%, 35% 100%, 35% 65%, 10% 65%, 10% 35%, 35% 35%, 35% 20%, 65% 20%, 65% 40%, 90% 40%, 90% 70%, 65% 70%);
         }
 
-        /* Статистика */
+        /* Мобільна статистика */
         #stats {
-            width: 600px;
+            width: 100%;
+            max-width: 450px;
             display: flex;
             justify-content: space-between;
-            margin-top: 10px;
-            font-size: 16px;
+            margin-top: 8px;
+            font-size: 14px;
             font-weight: bold;
             color: #535353;
+            background: #fff;
+            padding: 8px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* Меню / Вкладки */
+        /* Головна кнопка дії (Стрибок / Старт) */
+        #jump-btn {
+            width: 100%;
+            max-width: 450px;
+            height: 65px;
+            margin-top: 10px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px #0b7dda;
+            cursor: pointer;
+            active-transform: translateY(4px);
+        }
+        #jump-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px #0b7dda;
+        }
+
+        /* Меню нижче */
         .menu-container {
-            width: 600px;
-            margin-top: 20px;
+            width: 100%;
+            max-width: 450px;
+            margin-top: 15px;
             background: white;
             border-radius: 8px;
-            padding: 15px;
+            padding: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .tab-btn {
@@ -99,8 +135,8 @@
             background: #eee;
             cursor: pointer;
             font-weight: bold;
-            border-radius: 5px;
-            transition: 0.2s;
+            border-radius: 6px;
+            font-size: 14px;
         }
 
         .tab-btn.active {
@@ -116,67 +152,69 @@
             display: block;
         }
 
-        /* Магазин скінів */
+        /* Магазин */
         .skins-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
         }
 
         .skin-card {
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 8px;
             text-align: center;
             border-radius: 6px;
             background: #fafafa;
         }
 
         .skin-preview {
-            width: 30px;
-            height: 30px;
-            margin: 0 auto 10px;
+            width: 25px;
+            height: 25px;
+            margin: 0 auto 8px;
             border-radius: 4px;
         }
 
         .skin-btn {
             width: 100%;
-            padding: 5px;
+            padding: 6px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 12px;
         }
 
         .buy { background-color: #ff9800; color: white; }
         .equip { background-color: #2196F3; color: white; }
         .active-skin { background-color: #4CAF50; color: white; cursor: default; }
 
-        /* Промокоди */
+        /* Промо */
         .promo-box {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .promo-box input {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 14px;
         }
 
         .promo-box button {
-            padding: 10px 20px;
+            padding: 8px 15px;
             background: #4CAF50;
             color: white;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            border-radius: 6px;
             font-weight: bold;
+            font-size: 14px;
         }
 
         #promo-msg {
-            margin-top: 10px;
+            margin-top: 8px;
+            font-size: 13px;
             font-weight: bold;
         }
 
@@ -185,56 +223,54 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 18px;
-            color: #777;
+            font-size: 15px;
+            color: #535353;
             font-weight: bold;
             text-align: center;
+            width: 90%;
+            background: rgba(255,255,255,0.8);
+            padding: 5px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
-    <h1>Chrome Dino Game</h1>
+    <h1>Dino Mobile</h1>
     
-    <!-- Ігрове поле -->
-    <div id="game-container" onclick="jump()">
-        <div id="dino"></div>
-        <div id="start-msg">Натисни Пробіл або Клікни, щоб почати</div>
+    <div id="game-container">
+        <div id="dino" class="running"></div>
+        <div id="start-msg">Натисни СТРИБОК, щоб почати біг!</div>
     </div>
 
-    <!-- Статистика -->
+    <button id="jump-btn" onclick="handleActionButton()">СТРИБОК / СТАРТ</button>
+
     <div id="stats">
-        <div>Рахунок: <span id="score">0</span></div>
+        <div>Очки: <span id="score">0</span></div>
         <div>Рекорд: <span id="high-score">0</span></div>
-        <div>Коїни: 💰<span id="coins">0</span></div>
+        <div>Монети: 💰<span id="coins">0</span></div>
     </div>
 
-    <!-- Магазин та Промокоди -->
     <div class="menu-container">
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('shop')">🛒 Магазин скінів</button>
-            <button class="tab-btn" onclick="switchTab('promo')">🎁 Промокоди</button>
+            <button class="tab-btn active" onclick="switchTab('shop')">🛒 Магазин</button>
+            <button class="tab-btn" onclick="switchTab('promo')">🎁 Промо</button>
         </div>
 
-        <!-- Вкладка Магазину -->
         <div id="shop-tab" class="tab-content active">
-            <div class="skins-grid" id="skins-container">
-                <!-- Скіни генеруються через JS -->
-            </div>
+            <div class="skins-grid" id="skins-container"></div>
         </div>
 
-        <!-- Вкладка Промокодів -->
         <div id="promo-tab" class="tab-content">
             <div class="promo-box">
-                <input type="text" id="promo-input" placeholder="Введіть промокод...">
-                <button onclick="activatePromo()">Активувати</button>
+                <input type="text" id="promo-input" placeholder="Код (напр. PROMO1)...">
+                <button onclick="activatePromo()">ОК</button>
             </div>
             <p id="promo-msg"></p>
         </div>
     </div>
 
     <script>
-        // Елементи DOM
         const dino = document.getElementById('dino');
         const gameContainer = document.getElementById('game-container');
         const scoreEl = document.getElementById('score');
@@ -242,8 +278,8 @@
         const coinsEl = document.getElementById('coins');
         const startMsg = document.getElementById('start-msg');
         const skinsContainer = document.getElementById('skins-container');
+        const jumpBtn = document.getElementById('jump-btn');
 
-        // Ігрові змінні
         let isJumping = false;
         let isPlaying = false;
         let score = 0;
@@ -251,8 +287,7 @@
         let scoreInterval;
         let gameSpeed = 5;
 
-        // Збереження прогресу в LocalStorage
-        let playerData = JSON.parse(localStorage.getItem('dino_player_data')) || {
+        let playerData = JSON.parse(localStorage.getItem('dino_mobile_data')) || {
             highScore: 0,
             coins: 0,
             ownedSkins: ['default'],
@@ -260,7 +295,6 @@
             usedPromos: []
         };
 
-        // Дані про скіни (від 20 до 10000 коїнів)
         const skinsData = [
             { id: 'default', name: 'Класик', cost: 0, color: '#535353' },
             { id: 'skin1', name: 'Початківець', cost: 20, color: '#ff5722' },
@@ -271,99 +305,104 @@
             { id: 'skin6', name: 'Лорд Дракон', cost: 10000, color: '#e91e63' }
         ];
 
-        // 25 Промокодів (PROMO1 - PROMO25)
         const promos = {};
         for (let i = 1; i <= 25; i++) {
-            promos[`PROMO${i}`] = i * 100; // Кожен наступний дає більше коїнів (від 100 до 2500)
+            promos[`PROMO${i}`] = i * 100;
         }
-        // Додатковий секретний промокод для фану
         promos['BLOCKSTRIKE'] = 5000;
         promos['TKBPY'] = 3000;
 
-        // Ініціалізація
         function init() {
             highScoreEl.innerText = playerData.highScore;
             coinsEl.innerText = playerData.coins;
             applySkin();
             renderShop();
+            dino.classList.remove('running'); // Не біжить, поки не розпочато гру
         }
 
         function saveProgress() {
-            localStorage.setItem('dino_player_data', JSON.stringify(playerData));
+            localStorage.setItem('dino_mobile_data', JSON.stringify(playerData));
             highScoreEl.innerText = playerData.highScore;
             coinsEl.innerText = playerData.coins;
         }
 
-        // Керування стрибком
+        // Обробник натискання головної кнопки (підходить і для ПК Пробілу)
+        function handleActionButton() {
+            if (!isPlaying) {
+                startGame();
+            } else {
+                jump();
+            }
+        }
+
         document.addEventListener('keydown', function(e) {
             if (e.code === 'Space') {
-                if (!isPlaying) startGame();
-                else jump();
+                e.preventDefault();
+                handleActionButton();
             }
         });
 
         function jump() {
             if (isJumping || !isPlaying) return;
             isJumping = true;
-            let position = 0;
+            dino.classList.remove('running'); // Зупиняємо анімацію ніг у повітрі
             
-            // Анімація стрибка вверх-вниз
+            let position = 0;
             let upInterval = setInterval(() => {
-                if (position >= 120) {
+                if (position >= 105) {
                     clearInterval(upInterval);
                     let downInterval = setInterval(() => {
                         if (position <= 0) {
                             clearInterval(downInterval);
                             isJumping = false;
+                            if(isPlaying) dino.classList.add('running'); // Повертаємо біг на землі
                         }
-                        position -= 6;
+                        position -= 5;
                         dino.style.bottom = position + 'px';
                     }, 12);
                 }
-                position += 8;
+                position += 7;
                 dino.style.bottom = position + 'px';
             }, 12);
         }
 
-        // Старт гри
         function startGame() {
             isPlaying = true;
             score = 0;
-            gameSpeed = 6;
+            gameSpeed = 5;
             startMsg.style.display = 'none';
             scoreEl.innerText = score;
+            dino.classList.add('running');
+            jumpBtn.innerText = 'СТРИБОК 🆙';
 
-            // Очищення старих кактусів
             document.querySelectorAll('.cactus').forEach(c => c.remove());
 
-            // Лічильник очок
             scoreInterval = setInterval(() => {
                 score++;
                 scoreEl.innerText = score;
                 
-                // Кожні 100 очок конвертуються в +20 коїнів прямо під час гри!
                 if (score % 100 === 0) {
                     playerData.coins += 20;
                     coinsEl.innerText = playerData.coins;
                     saveProgress();
                 }
 
-                // Збільшення швидкості
-                if (score % 200 === 0) gameSpeed += 1;
+                if (score % 200 === 0) gameSpeed += 0.8;
             }, 100);
 
             spawnObstacle();
         }
 
-        // Генерація перешкод (кактусів)
         function spawnObstacle() {
             if (!isPlaying) return;
 
             const cactus = document.createElement('div');
             cactus.classList.add('cactus');
+            // Передаємо кактусу колір поточного скіна для стилю
+            cactus.style.backgroundColor = window.getComputedStyle(dino).backgroundColor;
             gameContainer.appendChild(cactus);
 
-            let cactusPosition = 600;
+            let cactusPosition = gameContainer.offsetWidth;
             cactus.style.left = cactusPosition + 'px';
 
             let moveInterval = setInterval(() => {
@@ -375,42 +414,40 @@
                 cactusPosition -= gameSpeed;
                 cactus.style.left = cactusPosition + 'px';
 
-                // Перевірка на зіткнення (Колізія)
                 let dinoBottom = parseInt(window.getComputedStyle(dino).getPropertyValue('bottom'));
                 
-                if (cactusPosition > 50 && cactusPosition < 90 && dinoBottom <= 40) {
+                // Колізія підлаштована під пікселі екрана мобілки
+                if (cactusPosition > 25 && cactusPosition < 65 && dinoBottom <= 40) {
                     clearInterval(moveInterval);
                     gameOver();
                 }
 
-                // Видалення кактуса за межами екрану
-                if (cactusPosition < -20) {
+                if (cactusPosition < -25) {
                     clearInterval(moveInterval);
                     cactus.remove();
                 }
             }, 15);
 
-            // Рандомний час до наступного кактуса
-            let randomTime = Math.random() * (2000 - 900) + 900;
+            let randomTime = Math.random() * (2200 - 1000) + 1000;
             obstacleTimeout = setTimeout(spawnObstacle, randomTime / (gameSpeed / 5));
         }
 
-        // Кінець гри
         function gameOver() {
             isPlaying = false;
             clearInterval(scoreInterval);
             clearTimeout(obstacleTimeout);
-            startMsg.innerHTML = `Кінець гри!<br>Рахунок: ${score}<br>Натисни Пробіл/Клік для перезапуску`;
+            dino.classList.remove('running');
+            
+            startMsg.innerHTML = `ГРА ЗАКІНЧЕНА!<br>Рахунок: ${score}`;
             startMsg.style.display = 'block';
+            jumpBtn.innerText = 'ЗНОВУ 🔄';
 
-            // Перевірка рекорду
             if (score > playerData.highScore) {
                 playerData.highScore = score;
             }
             saveProgress();
         }
 
-        // Перемикання вкладок меню
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -424,7 +461,6 @@
             }
         }
 
-        // Відображення магазину
         function renderShop() {
             skinsContainer.innerHTML = '';
             skinsData.forEach(skin => {
@@ -437,20 +473,19 @@
                 } else if (isOwned) {
                     btnHTML = `<button class="skin-btn equip" onclick="equipSkin('${skin.id}')">Вдягти</button>`;
                 } else {
-                    btnHTML = `<button class="skin-btn buy" onclick="buySkin('${skin.id}', ${skin.cost})">Купити 💰${skin.cost}</button>`;
+                    btnHTML = `<button class="skin-btn buy" onclick="buySkin('${skin.id}', ${skin.cost})">💰${skin.cost}</button>`;
                 }
 
                 skinsContainer.innerHTML += `
                     <div class="skin-card">
                         <div class="skin-preview" style="background-color: ${skin.color}"></div>
-                        <div style="font-weight:bold; font-size:14px; margin-bottom:5px;">${skin.name}</div>
+                        <div style="font-weight:bold; font-size:12px; margin-bottom:5px;">${skin.name}</div>
                         ${btnHTML}
                     </div>
                 `;
             });
         }
 
-        // Купівля скіна
         window.buySkin = function(id, cost) {
             if (playerData.coins >= cost) {
                 playerData.coins -= cost;
@@ -458,11 +493,10 @@
                 saveProgress();
                 renderShop();
             } else {
-                alert('Не вистачає коїнів!');
+                alert('Мало коїнів!');
             }
         }
 
-        // Зміна скіна (аватарки)
         window.equipSkin = function(id) {
             playerData.activeSkin = id;
             saveProgress();
@@ -477,14 +511,13 @@
             }
         }
 
-        // Активація промокодів
         window.activatePromo = function() {
             const input = document.getElementById('promo-input').value.trim().toUpperCase();
             const msg = document.getElementById('promo-msg');
 
             if (playerData.usedPromos.includes(input)) {
                 msg.style.color = 'red';
-                msg.innerText = 'Цей промокод вже активовано!';
+                msg.innerText = 'Вже використано!';
                 return;
             }
 
@@ -495,16 +528,16 @@
                 saveProgress();
                 
                 msg.style.color = 'green';
-                msg.innerText = `Успішно! Додано +💰${reward} коїнів.`;
+                msg.innerText = `+💰${reward} коїнів!`;
                 document.getElementById('promo-input').value = '';
             } else {
                 msg.style.color = 'red';
-                msg.innerText = 'Неправильний промокод!';
+                msg.innerText = 'Невірний код!';
             }
         }
 
-        // Старт системи
         init();
     </script>
 </body>
-</html>
+            </html>
+        
